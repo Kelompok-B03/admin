@@ -1,3 +1,4 @@
+// src/main/java/id/ac/ui/cs/gatherlove/admin/model/DashboardStatistics.java
 package id.ac.ui.cs.gatherlove.admin.model;
 
 import lombok.AllArgsConstructor;
