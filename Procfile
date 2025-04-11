@@ -1,0 +1,1 @@
+web: java -jar build/libs/gatherlove-admin.jar --spring.profiles.active=staging
