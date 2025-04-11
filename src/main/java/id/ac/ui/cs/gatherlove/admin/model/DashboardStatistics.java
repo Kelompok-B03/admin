@@ -12,5 +12,11 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DashboardStatistics {
-
+    private Long totalUsers;
+    private Long totalCampaigns;
+    private Long pendingCampaigns;
+    private Long activeCampaigns;
+    private Long completedCampaigns;
+    private Long totalDonations;
+    private BigDecimal totalAmountCollected;
 }
