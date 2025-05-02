@@ -20,13 +20,10 @@ class AuthServiceTest {
 
     @Test
     void loginSuccess() {
-        // Given
         LoginRequestDTO request = new LoginRequestDTO("admin1", "password");
 
-        // When
         LoginResponseDTO response = authService.login(request);
 
-        // Then
         assertNotNull(response);
         assertTrue(response.isSuccess());
         assertEquals("ADMIN", response.getUser().getRole());
@@ -35,13 +32,10 @@ class AuthServiceTest {
 
     @Test
     void loginFailedWithInvalidCredentials() {
-        // Given
         LoginRequestDTO request = new LoginRequestDTO("invalidUser", "wrongPassword");
 
-        // When
         LoginResponseDTO response = authService.login(request);
 
-        // Then
         assertNotNull(response);
         assertFalse(response.isSuccess());
         assertNull(response.getUser());
@@ -50,25 +44,19 @@ class AuthServiceTest {
 
     @Test
     void checkRoleAdmin() {
-        // Given
         String token = authService.login(new LoginRequestDTO("admin1", "password")).getToken();
 
-        // When
         boolean isAdmin = authService.isAdmin(token);
 
-        // Then
         assertTrue(isAdmin);
     }
 
     @Test
     void checkRoleNonAdmin() {
-        // Given
         String token = authService.login(new LoginRequestDTO("fundraiser1", "password")).getToken();
 
-        // When
         boolean isAdmin = authService.isAdmin(token);
 
-        // Then
         assertFalse(isAdmin);
     }
 }

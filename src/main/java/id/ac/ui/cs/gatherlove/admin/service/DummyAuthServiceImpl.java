@@ -1,18 +1,18 @@
 package id.ac.ui.cs.gatherlove.admin.service;
 
+import id.ac.ui.cs.gatherlove.admin.dto.LoginRequestDTO;
+import id.ac.ui.cs.gatherlove.admin.dto.LoginResponseDTO;
 import id.ac.ui.cs.gatherlove.admin.dto.UserDTO;
-import id.ac.ui.cs.gatherlove.admin.service.AuthService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class DummyAuthServiceImpl implements AuthService {
 
     private final List<UserDTO> dummyUsers = new ArrayList<>();
+    private final Map<String, UserDTO> tokenStorage = new HashMap<>();
 
     public DummyAuthServiceImpl() {
         // Inisialisasi beberapa data dummy
@@ -43,5 +43,44 @@ public class DummyAuthServiceImpl implements AuthService {
     @Override
     public List<UserDTO> getAllUsers() {
         return new ArrayList<>(dummyUsers);
+    }
+
+    @Override
+    public LoginResponseDTO login(LoginRequestDTO request) {
+        // Dalam implementasi nyata, ini akan melakukan panggilan ke service auth
+        // Untuk implementasi dummy, kita hanya memeriksa apakah username ada di dummyUsers
+
+        Optional<UserDTO> userOptional = dummyUsers.stream()
+                .filter(user -> user.getUsername().equals(request.getUsername()) && "ACTIVE".equals(user.getStatus()))
+                .findFirst();
+
+        if (userOptional.isPresent()) {
+            UserDTO user = userOptional.get();
+            // Buat token sederhana (dalam implementasi nyata, ini akan menggunakan JWT)
+            String token = UUID.randomUUID().toString();
+            tokenStorage.put(token, user);
+
+            return LoginResponseDTO.builder()
+                    .success(true)
+                    .token(token)
+                    .user(user)
+                    .build();
+        } else {
+            return LoginResponseDTO.builder()
+                    .success(false)
+                    .errorMessage("Username atau password salah")
+                    .build();
+        }
+    }
+
+    @Override
+    public boolean isAdmin(String token) {
+        UserDTO user = tokenStorage.get(token);
+        return user != null && "ADMIN".equals(user.getRole());
+    }
+
+    @Override
+    public UserDTO getUserFromToken(String token) {
+        return tokenStorage.get(token);
     }
 }
