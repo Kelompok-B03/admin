@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Check out the Git repository
         uses: actions/checkout@v4
+      - name: Generate .env file
+        run: |
+          echo "DB_HOST=${{ secrets.DB_HOST }}" >> .env
+          echo "DB_PORT=${{ secrets.DB_PORT }}" >> .env
+          echo "DB_NAME=${{ secrets.DB_NAME }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
       - name: Set up Java toolchain
         uses: actions/setup-java@v4
         with:
