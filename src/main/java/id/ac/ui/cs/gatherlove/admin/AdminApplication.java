@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @SpringBootApplication
-public class AdminApplication {
+public class    AdminApplication {
     @Autowired
     private DataSource dataSource;
 

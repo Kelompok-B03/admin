@@ -1,4 +1,3 @@
-// src/main/java/id/ac/ui/cs/gatherlove/admin/service/impl/DummyCampaignServiceImpl.java
 package id.ac.ui.cs.gatherlove.admin.service;
 
 import id.ac.ui.cs.gatherlove.admin.dto.CampaignDTO;
