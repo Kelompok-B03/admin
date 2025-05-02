@@ -68,6 +68,7 @@ dependencies {
     testImplementation("io.github.bonigarcia:selenium-jupiter:${versions["seleniumJupiter"]}")
     testImplementation("com.h2database:h2:2.2.224")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testImplementation("com.h2database:h2:2.2.224") //test database
 }
 
 tasks.withType<Test> {
