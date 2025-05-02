@@ -8,4 +8,8 @@ public interface AuthService {
     Long getTotalUsers();
     void blockUser(UUID userId, String reason);
     List<UserDTO> getAllUsers();
+
+    LoginResponseDTO login(LoginRequestDTO request);
+    boolean isAdmin(String token);
+    UserDTO getUserFromToken(String token);
 }
