@@ -25,21 +25,47 @@ public class CampaignManagementController {
 
     @GetMapping
     public ResponseEntity<Map<String, List<CampaignDTO>>> getAllCampaigns() {
-        return null;
+        Map<String, List<CampaignDTO>> response = new HashMap<>();
+        response.put("pendingCampaigns", adminFacade.getPendingCampaigns());
+        response.put("activeCampaigns", adminFacade.getActiveCampaigns());
+        response.put("completedCampaigns", adminFacade.getCompletedCampaigns());
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{campaignId}")
     public ResponseEntity<?> getCampaignDetails(@PathVariable UUID campaignId) {
-        return null;
+        CampaignDTO campaign = findCampaignById(campaignId);
+
+        if (campaign == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("campaign", campaign);
+        response.put("proofs", adminFacade.getFundUsageProof(campaignId));
+
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{campaignId}/verify")
     public ResponseEntity<Void> verifyCampaign(
+            @PathVariable UUID campaignId,
+            @RequestParam boolean approved,
+            @RequestParam(required = false) String rejectionReason) {
 
-        return null;
+        adminFacade.verifyCampaign(campaignId, approved, rejectionReason);
+        return ResponseEntity.ok().build();
     }
 
     private CampaignDTO findCampaignById(UUID campaignId) {
-        return null;
+        List<CampaignDTO> allCampaigns = adminFacade.getPendingCampaigns();
+        allCampaigns.addAll(adminFacade.getActiveCampaigns());
+        allCampaigns.addAll(adminFacade.getCompletedCampaigns());
+
+        return allCampaigns.stream()
+                .filter(campaign -> campaign.getId().equals(campaignId))
+                .findFirst()
+                .orElse(null);
     }
 }
