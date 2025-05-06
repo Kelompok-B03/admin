@@ -56,15 +56,23 @@ class CampaignManagementControllerTest {
                         LocalDate.now().plusDays(25), "ACTIVE", null, null)
         );
 
+        List<CampaignDTO> completedCampaigns = Arrays.asList(
+                new CampaignDTO(UUID.randomUUID(), "Kampanye Selesai 1", "Deskripsi",
+                        UUID.randomUUID(), "Fundraiser 3", new BigDecimal("3000000"),
+                        new BigDecimal("2500000"), LocalDate.now().minusDays(40),
+                        LocalDate.now().minusDays(10), "COMPLETED", null, null)
+        );
+
         when(adminFacade.getPendingCampaigns()).thenReturn(pendingCampaigns);
         when(adminFacade.getActiveCampaigns()).thenReturn(activeCampaigns);
+        when(adminFacade.getCompletedCampaigns()).thenReturn(completedCampaigns);
 
         // Act & Assert
-        mockMvc.perform(get("/admin/campaigns"))
+        mockMvc.perform(get("/api/admin/campaigns"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/campaigns"))
-                .andExpect(model().attributeExists("pendingCampaigns"))
-                .andExpect(model().attributeExists("activeCampaigns"));
+                .andExpect(jsonPath("$.pendingCampaigns").exists())
+                .andExpect(jsonPath("$.activeCampaigns").exists())
+                .andExpect(jsonPath("$.completedCampaigns").exists());
     }
 
     @Test
@@ -80,39 +88,38 @@ class CampaignManagementControllerTest {
         List<String> proofs = Arrays.asList("url1", "url2");
 
         when(adminFacade.getPendingCampaigns()).thenReturn(Arrays.asList(campaign));
+        when(adminFacade.getActiveCampaigns()).thenReturn(Arrays.asList());
+        when(adminFacade.getCompletedCampaigns()).thenReturn(Arrays.asList());
         when(adminFacade.getFundUsageProof(campaignId)).thenReturn(proofs);
 
         // Act & Assert
-        mockMvc.perform(get("/admin/campaigns/" + campaignId))
+        mockMvc.perform(get("/api/admin/campaigns/" + campaignId))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/campaign-details"))
-                .andExpect(model().attributeExists("campaign"))
-                .andExpect(model().attributeExists("proofs"));
+                .andExpect(jsonPath("$.campaign").exists())
+                .andExpect(jsonPath("$.proofs").exists());
     }
 
     @Test
-    void verifyCampaign_Approve_ShouldRedirectToCampaigns() throws Exception {
+    void verifyCampaign_Approve_ShouldReturnOk() throws Exception {
         // Act & Assert
-        mockMvc.perform(post("/admin/campaigns/" + campaignId + "/verify")
+        mockMvc.perform(post("/api/admin/campaigns/" + campaignId + "/verify")
                         .param("approved", "true")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/campaigns"));
+                .andExpect(status().isOk());
 
         verify(adminFacade, times(1)).verifyCampaign(campaignId, true, null);
     }
 
     @Test
-    void verifyCampaign_Reject_ShouldRedirectToCampaigns() throws Exception {
+    void verifyCampaign_Reject_ShouldReturnOk() throws Exception {
         // Act & Assert
         String rejectionReason = "Konten kampanye tidak sesuai kebijakan";
 
-        mockMvc.perform(post("/admin/campaigns/" + campaignId + "/verify")
+        mockMvc.perform(post("/api/admin/campaigns/" + campaignId + "/verify")
                         .param("approved", "false")
                         .param("rejectionReason", rejectionReason)
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/campaigns"));
+                .andExpect(status().isOk());
 
         verify(adminFacade, times(1)).verifyCampaign(campaignId, false, rejectionReason);
     }
