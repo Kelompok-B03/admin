@@ -83,4 +83,12 @@ public class DummyAuthServiceImpl implements AuthService {
     public UserDTO getUserFromToken(String token) {
         return tokenStorage.get(token);
     }
+
+    @Override
+    public UserDTO getUserById(UUID userId) {
+        return dummyUsers.stream()
+                .filter(user -> user.getId().equals(userId))
+                .findFirst()
+                .orElse(null);
+    }
 }

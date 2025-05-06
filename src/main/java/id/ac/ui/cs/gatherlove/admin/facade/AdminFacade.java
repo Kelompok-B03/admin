@@ -54,4 +54,6 @@ public interface AdminFacade {
      * Mendapatkan daftar pengguna
      */
     List<UserDTO> getAllUsers();
+
+    UserDTO getUserById(UUID userId);
 }

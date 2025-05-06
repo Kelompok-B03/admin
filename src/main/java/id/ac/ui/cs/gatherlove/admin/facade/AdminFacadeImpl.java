@@ -77,4 +77,9 @@ public class AdminFacadeImpl implements AdminFacade {
     public List<UserDTO> getAllUsers() {
         return authService.getAllUsers();
     }
+
+    @Override
+    public UserDTO getUserById(UUID userId) {
+        return authService.getUserById(userId);
+    }
 }

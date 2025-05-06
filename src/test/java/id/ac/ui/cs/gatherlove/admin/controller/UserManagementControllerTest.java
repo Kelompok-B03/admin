@@ -40,7 +40,6 @@ class UserManagementControllerTest {
 
     @Test
     void getAllUsers_ShouldReturnUsersList() throws Exception {
-        // Arrange
         List<UserDTO> users = Arrays.asList(
                 new UserDTO(UUID.randomUUID(), "user1", "user1@example.com", "User One", "FUNDRAISER", "ACTIVE", LocalDateTime.now().minusMonths(3)),
                 new UserDTO(UUID.randomUUID(), "user2", "user2@example.com", "User Two", "DONOR", "ACTIVE", LocalDateTime.now().minusMonths(2))
@@ -48,7 +47,6 @@ class UserManagementControllerTest {
 
         when(adminFacade.getAllUsers()).thenReturn(users);
 
-        // Act & Assert
         mockMvc.perform(get("/api/admin/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].username").value("user1"))
@@ -57,7 +55,6 @@ class UserManagementControllerTest {
 
     @Test
     void getUserDetails_ShouldReturnUserDetails() throws Exception {
-        // Arrange
         UserDTO user = new UserDTO(
                 userId, "user1", "user1@example.com", "User One",
                 "FUNDRAISER", "ACTIVE", LocalDateTime.now().minusMonths(3)
@@ -65,7 +62,6 @@ class UserManagementControllerTest {
 
         when(adminFacade.getUserById(userId)).thenReturn(user);
 
-        // Act & Assert
         mockMvc.perform(get("/api/admin/users/" + userId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("user1"))
@@ -74,17 +70,14 @@ class UserManagementControllerTest {
 
     @Test
     void getUserDetails_UserNotFound_ShouldReturnNotFound() throws Exception {
-        // Arrange
         when(adminFacade.getUserById(userId)).thenReturn(null);
 
-        // Act & Assert
         mockMvc.perform(get("/api/admin/users/" + userId))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void blockUser_ShouldReturnOk() throws Exception {
-        // Act & Assert
         String violationReason = "Melanggar aturan platform dengan menyalahgunakan dana kampanye";
 
         mockMvc.perform(post("/api/admin/users/" + userId + "/block")

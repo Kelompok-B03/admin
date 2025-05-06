@@ -151,4 +151,25 @@ class AdminFacadeTest {
         assertEquals("User 1", transactions.get(0).getUsername());
         assertEquals("User 2", transactions.get(1).getUsername());
     }
+
+    @Test
+    void getUserById_ShouldReturnUser() {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+        UserDTO expectedUser = new UserDTO(
+                userId, "user1", "user1@example.com", "User One",
+                "FUNDRAISER", "ACTIVE", LocalDateTime.now().minusMonths(3)
+        );
+
+        when(authService.getUserById(userId)).thenReturn(expectedUser);
+
+        // Act
+        UserDTO result = adminFacade.getUserById(userId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(userId, result.getId());
+        assertEquals("user1", result.getUsername());
+        verify(authService, times(1)).getUserById(userId);
+    }
 }
