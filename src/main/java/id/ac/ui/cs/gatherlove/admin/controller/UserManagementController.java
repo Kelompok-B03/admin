@@ -23,19 +23,27 @@ public class UserManagementController {
 
     @GetMapping
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-
-        return null;
+        List<UserDTO> users = adminFacade.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserDTO> getUserDetails(@PathVariable UUID userId) {
+        UserDTO user = adminFacade.getUserById(userId);
 
-        return null;
+        if (user == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(user);
     }
 
     @PostMapping("/{userId}/block")
     public ResponseEntity<Void> blockUser(
+            @PathVariable UUID userId,
+            @RequestParam String reason) {
 
-        return null;
+        adminFacade.blockUser(userId, reason);
+        return ResponseEntity.ok().build();
     }
 }

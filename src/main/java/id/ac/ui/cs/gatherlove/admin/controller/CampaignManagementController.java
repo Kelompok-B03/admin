@@ -69,5 +69,37 @@ public class CampaignManagementController {
                 .orElse(null);
     }
 
+    @GetMapping("/{campaignId}/reject-with-block")
+    public ResponseEntity<Map<String, Object>> getCampaignRejectWithBlockForm(@PathVariable UUID campaignId) {
+        CampaignDTO campaign = findCampaignById(campaignId);
 
+        if (campaign == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("campaign", campaign);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{campaignId}/reject-with-block")
+    public ResponseEntity<Void> rejectCampaignAndBlockUser(
+            @PathVariable UUID campaignId,
+            @RequestParam String rejectionReason,
+            @RequestParam String blockReason) {
+
+        CampaignDTO campaign = findCampaignById(campaignId);
+
+        if (campaign == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Tolak kampanye
+        adminFacade.verifyCampaign(campaignId, false, rejectionReason);
+
+        // Blokir pengguna
+        adminFacade.blockUser(campaign.getFundraiserId(), blockReason);
+
+        return ResponseEntity.ok().build();
+    }
 }
