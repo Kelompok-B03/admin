@@ -10,6 +10,7 @@ public interface AuthService {
     Long getTotalUsers();
     void blockUser(UUID userId, String reason);
     List<UserDTO> getAllUsers();
+    UserDTO getUserById(UUID userId);
 
     LoginResponseDTO login(LoginRequestDTO request);
     boolean isAdmin(String token);
