@@ -72,6 +72,11 @@ public class AdminFacadeImpl implements AdminFacade {
     public void blockUser(UUID userId, String reason) {
         authService.blockUser(userId, reason);
     }
+    
+    @Override
+    public void unblockUser(UUID userId) {
+        authService.unblockUser(userId);
+    }
 
     @Override
     public List<UserDTO> getAllUsers() {

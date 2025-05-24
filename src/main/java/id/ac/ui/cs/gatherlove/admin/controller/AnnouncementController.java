@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/announcements")
+@RequestMapping("/api/admin/announcements")
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
