@@ -12,6 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/admin/announcements")
+@CrossOrigin(origins = "*")
 public class AnnouncementController {
 
     private final AnnouncementService announcementService;
@@ -21,13 +22,13 @@ public class AnnouncementController {
         this.announcementService = announcementService;
     }
 
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<List<AnnouncementDTO>> getAllAnnouncements() {
         List<AnnouncementDTO> announcements = announcementService.getAllAnnouncements();
         return ResponseEntity.ok(announcements);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<AnnouncementDTO> createAnnouncement(@RequestBody AnnouncementDTO announcementDTO) {
         AnnouncementDTO createdAnnouncement = announcementService.createAnnouncement(announcementDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdAnnouncement);
