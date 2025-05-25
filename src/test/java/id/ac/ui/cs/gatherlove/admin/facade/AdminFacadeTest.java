@@ -1,14 +1,11 @@
 package id.ac.ui.cs.gatherlove.admin.facade;
 
 import id.ac.ui.cs.gatherlove.admin.dto.CampaignDTO;
-import id.ac.ui.cs.gatherlove.admin.dto.DonationDTO;
-import id.ac.ui.cs.gatherlove.admin.dto.TransactionDTO;
 import id.ac.ui.cs.gatherlove.admin.dto.UserDTO;
 import id.ac.ui.cs.gatherlove.admin.model.DashboardStatistics;
 import id.ac.ui.cs.gatherlove.admin.service.AuthService;
 import id.ac.ui.cs.gatherlove.admin.service.CampaignService;
 import id.ac.ui.cs.gatherlove.admin.service.DonationService;
-import id.ac.ui.cs.gatherlove.admin.service.WalletService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -35,15 +32,12 @@ class AdminFacadeTest {
     @Mock
     private DonationService donationService;
 
-    @Mock
-    private WalletService walletService;
-
     private AdminFacade adminFacade;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-        adminFacade = new AdminFacadeImpl(authService, campaignService, donationService, walletService);
+        adminFacade = new AdminFacadeImpl(authService, campaignService, donationService);
     }
 
     @Test
@@ -55,7 +49,6 @@ class AdminFacadeTest {
         when(campaignService.getActiveCampaigns()).thenReturn(15L);
         when(campaignService.getCompletedCampaigns()).thenReturn(5L);
         when(donationService.getTotalDonations()).thenReturn(200L);
-        when(donationService.getTotalAmountCollected()).thenReturn(new BigDecimal("5000000"));
 
         // Act
         DashboardStatistics statistics = adminFacade.getDashboardStatistics();
@@ -68,7 +61,6 @@ class AdminFacadeTest {
         assertEquals(15L, statistics.getActiveCampaigns());
         assertEquals(5L, statistics.getCompletedCampaigns());
         assertEquals(200L, statistics.getTotalDonations());
-        assertEquals(new BigDecimal("5000000"), statistics.getTotalAmountCollected());
     }
 
     @Test
@@ -126,40 +118,21 @@ class AdminFacadeTest {
         verify(authService, times(1)).blockUser(userId, reason);
     }
 
-    @Test
-    void getTransactionHistory_ShouldReturnTransactionHistory() {
-        // Arrange
-        TransactionDTO transaction1 = new TransactionDTO(
-                UUID.randomUUID(), UUID.randomUUID(), "User 1",
-                new BigDecimal("100000"), LocalDateTime.now(),
-                "DONATION", "SUCCESSFUL", "Donasi kampanye X"
-        );
-        TransactionDTO transaction2 = new TransactionDTO(
-                UUID.randomUUID(), UUID.randomUUID(), "User 2",
-                new BigDecimal("200000"), LocalDateTime.now(),
-                "DONATION", "SUCCESSFUL", "Donasi kampanye Y"
-        );
-
-        when(walletService.getAllTransactions()).thenReturn(Arrays.asList(transaction1, transaction2));
-
-        // Act
-        List<TransactionDTO> transactions = adminFacade.getTransactionHistory();
-
-        // Assert
-        assertNotNull(transactions);
-        assertEquals(2, transactions.size());
-        assertEquals("User 1", transactions.get(0).getUsername());
-        assertEquals("User 2", transactions.get(1).getUsername());
-    }
 
     @Test
     void getUserById_ShouldReturnUser() {
         // Arrange
         UUID userId = UUID.randomUUID();
-        UserDTO expectedUser = new UserDTO(
-                userId, "user1", "user1@example.com", "User One",
-                "FUNDRAISER", "ACTIVE", LocalDateTime.now().minusMonths(3)
-        );
+        LocalDateTime createdAt = LocalDateTime.now().minusMonths(3);
+        
+        UserDTO expectedUser = new UserDTO();
+        expectedUser.setId(userId);
+        expectedUser.setEmail("user1@example.com");
+        expectedUser.setName("User One");
+        expectedUser.setRoles(Arrays.asList("FUNDRAISER"));
+        expectedUser.setActive(true);
+        expectedUser.setCreatedAt(createdAt);
+        expectedUser.setUpdatedAt(createdAt);
 
         when(authService.getUserById(userId)).thenReturn(expectedUser);
 
@@ -169,7 +142,56 @@ class AdminFacadeTest {
         // Assert
         assertNotNull(result);
         assertEquals(userId, result.getId());
-        assertEquals("user1", result.getUsername());
+        assertEquals("user1@example.com", result.getEmail());
+        assertEquals("User One", result.getName());
+        assertTrue(result.isActive());
+        assertEquals("FUNDRAISER", result.getRoles().get(0));
         verify(authService, times(1)).getUserById(userId);
+    }
+
+    @Test
+    void unblockUser_ShouldCallAuthService() {
+        // Arrange
+        UUID userId = UUID.randomUUID();
+
+        // Act
+        adminFacade.unblockUser(userId);
+
+        // Assert
+        verify(authService, times(1)).unblockUser(userId);
+    }
+
+    @Test
+    void getAllUsers_ShouldReturnAllUsers() {
+        // Arrange
+        List<UserDTO> expectedUsers = Arrays.asList(
+            createTestUserDTO(UUID.randomUUID(), "admin@example.com", "Admin", Arrays.asList("ADMIN"), true),
+            createTestUserDTO(UUID.randomUUID(), "user@example.com", "User", Arrays.asList("USER"), true)
+        );
+        
+        when(authService.getAllUsers()).thenReturn(expectedUsers);
+
+        // Act
+        List<UserDTO> result = adminFacade.getAllUsers();
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("admin@example.com", result.get(0).getEmail());
+        assertEquals("user@example.com", result.get(1).getEmail());
+        verify(authService, times(1)).getAllUsers();
+    }
+
+    // Helper method untuk membuat UserDTO
+    private UserDTO createTestUserDTO(UUID id, String email, String name, List<String> roles, boolean active) {
+        UserDTO user = new UserDTO();
+        user.setId(id);
+        user.setEmail(email);
+        user.setName(name);
+        user.setRoles(roles);
+        user.setActive(active);
+        user.setCreatedAt(LocalDateTime.now().minusMonths(1));
+        user.setUpdatedAt(LocalDateTime.now().minusMonths(1));
+        return user;
     }
 }

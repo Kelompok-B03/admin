@@ -1,8 +1,6 @@
 package id.ac.ui.cs.gatherlove.admin.facade;
 
 import id.ac.ui.cs.gatherlove.admin.dto.CampaignDTO;
-import id.ac.ui.cs.gatherlove.admin.dto.DonationDTO;
-import id.ac.ui.cs.gatherlove.admin.dto.TransactionDTO;
 import id.ac.ui.cs.gatherlove.admin.dto.UserDTO;
 import id.ac.ui.cs.gatherlove.admin.model.DashboardStatistics;
 
@@ -36,11 +34,6 @@ public interface AdminFacade {
     void verifyCampaign(UUID campaignId, boolean approved, String rejectionReason);
 
     /**
-     * Mendapatkan riwayat transaksi donasi
-     */
-    List<TransactionDTO> getTransactionHistory();
-
-    /**
      * Mendapatkan bukti penggunaan dana kampanye
      */
     List<String> getFundUsageProof(UUID campaignId);
@@ -49,6 +42,11 @@ public interface AdminFacade {
      * Memblokir pengguna
      */
     void blockUser(UUID userId, String reason);
+    
+    /**
+     * Membuka blokir pengguna
+     */
+    void unblockUser(UUID userId);
 
     /**
      * Mendapatkan daftar pengguna

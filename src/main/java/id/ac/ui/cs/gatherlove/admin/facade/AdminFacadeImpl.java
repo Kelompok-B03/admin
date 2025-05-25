@@ -2,14 +2,11 @@
 package id.ac.ui.cs.gatherlove.admin.facade;
 
 import id.ac.ui.cs.gatherlove.admin.dto.CampaignDTO;
-import id.ac.ui.cs.gatherlove.admin.dto.DonationDTO;
-import id.ac.ui.cs.gatherlove.admin.dto.TransactionDTO;
 import id.ac.ui.cs.gatherlove.admin.dto.UserDTO;
 import id.ac.ui.cs.gatherlove.admin.model.DashboardStatistics;
 import id.ac.ui.cs.gatherlove.admin.service.AuthService;
 import id.ac.ui.cs.gatherlove.admin.service.CampaignService;
 import id.ac.ui.cs.gatherlove.admin.service.DonationService;
-import id.ac.ui.cs.gatherlove.admin.service.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +20,6 @@ public class AdminFacadeImpl implements AdminFacade {
     private final AuthService authService;
     private final CampaignService campaignService;
     private final DonationService donationService;
-    private final WalletService walletService;
 
     @Override
     public DashboardStatistics getDashboardStatistics() {
@@ -34,7 +30,6 @@ public class AdminFacadeImpl implements AdminFacade {
                 .activeCampaigns(campaignService.getActiveCampaigns())
                 .completedCampaigns(campaignService.getCompletedCampaigns())
                 .totalDonations(donationService.getTotalDonations())
-                .totalAmountCollected(donationService.getTotalAmountCollected())
                 .build();
     }
 
@@ -59,11 +54,6 @@ public class AdminFacadeImpl implements AdminFacade {
     }
 
     @Override
-    public List<TransactionDTO> getTransactionHistory() {
-        return walletService.getAllTransactions();
-    }
-
-    @Override
     public List<String> getFundUsageProof(UUID campaignId) {
         return campaignService.getFundUsageProof(campaignId);
     }
@@ -71,6 +61,11 @@ public class AdminFacadeImpl implements AdminFacade {
     @Override
     public void blockUser(UUID userId, String reason) {
         authService.blockUser(userId, reason);
+    }
+    
+    @Override
+    public void unblockUser(UUID userId) {
+        authService.unblockUser(userId);
     }
 
     @Override

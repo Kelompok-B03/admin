@@ -9,8 +9,10 @@ import java.util.UUID;
 public interface AuthService {
     Long getTotalUsers();
     void blockUser(UUID userId, String reason);
+    void unblockUser(UUID userId);
     List<UserDTO> getAllUsers();
     UserDTO getUserById(UUID userId);
+    UserDTO getUserByEmail(String email); 
 
     LoginResponseDTO login(LoginRequestDTO request);
     boolean isAdmin(String token);
