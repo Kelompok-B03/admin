@@ -56,7 +56,8 @@ class AnnouncementControllerTest {
 
         when(announcementService.getAllAnnouncements()).thenReturn(announcements);
 
-        mockMvc.perform(get("/api/admin/announcements"))
+        // Perbaikan URL - sesuaikan dengan endpoint di controller
+        mockMvc.perform(get("/api/admin/announcements/list"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("Pengumuman 1"))
                 .andExpect(jsonPath("$[1].title").value("Pengumuman 2"));
@@ -77,7 +78,8 @@ class AnnouncementControllerTest {
 
         when(announcementService.createAnnouncement(any(AnnouncementDTO.class))).thenReturn(responseDTO);
 
-        mockMvc.perform(post("/api/admin/announcements")
+        // Perbaikan URL - sesuaikan dengan endpoint di controller
+        mockMvc.perform(post("/api/admin/announcements/create")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"title\":\"Pengumuman Baru\",\"content\":\"Konten pengumuman baru\"}"))
                 .andExpect(status().isCreated())

@@ -11,3 +11,10 @@ spring:
   h2:
     console:
       enabled: true
+
+app:
+  jwt:
+    key: abcdefghijklmnopqrstuvwxyz123456ABCDEFGHIJKLMNOPQRSTUVWXYZ789012
+    algorithm: HS256
+    issuer: test-issuer
+    expiresIn: PT15M
