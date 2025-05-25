@@ -6,7 +6,6 @@ import id.ac.ui.cs.gatherlove.admin.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
@@ -21,12 +20,10 @@ import java.util.UUID;
 @CrossOrigin(origins = "*")
 public class UserManagementController {
 
-    private final AdminFacade adminFacade;
     private final AuthService authService;
 
     @Autowired
     public UserManagementController(AdminFacade adminFacade, AuthService authService) {
-        this.adminFacade = adminFacade;
         this.authService = authService;
     }
 

@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Endpoint publik
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/admin/announcements/list").permitAll()
                         // Endpoint admin
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         // Endpoint lain
