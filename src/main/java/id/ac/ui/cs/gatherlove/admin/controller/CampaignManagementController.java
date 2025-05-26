@@ -26,7 +26,6 @@ public class CampaignManagementController {
     @GetMapping
     public ResponseEntity<Map<String, List<CampaignDTO>>> getAllCampaigns() {
         Map<String, List<CampaignDTO>> response = new HashMap<>();
-        response.put("pendingCampaigns", adminFacade.getPendingCampaigns());
         response.put("activeCampaigns", adminFacade.getActiveCampaigns());
         response.put("completedCampaigns", adminFacade.getCompletedCampaigns());
 
@@ -48,58 +47,13 @@ public class CampaignManagementController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/{campaignId}/verify")
-    public ResponseEntity<Void> verifyCampaign(
-            @PathVariable UUID campaignId,
-            @RequestParam boolean approved,
-            @RequestParam(required = false) String rejectionReason) {
-
-        adminFacade.verifyCampaign(campaignId, approved, rejectionReason);
-        return ResponseEntity.ok().build();
-    }
-
     private CampaignDTO findCampaignById(UUID campaignId) {
-        List<CampaignDTO> allCampaigns = adminFacade.getPendingCampaigns();
-        allCampaigns.addAll(adminFacade.getActiveCampaigns());
+        List<CampaignDTO> allCampaigns = adminFacade.getActiveCampaigns();
         allCampaigns.addAll(adminFacade.getCompletedCampaigns());
 
         return allCampaigns.stream()
-                .filter(campaign -> campaign.getId().equals(campaignId))
+                .filter(campaign -> campaignId.equals(UUID.fromString(campaign.getCampaignId())))
                 .findFirst()
                 .orElse(null);
-    }
-
-    @GetMapping("/{campaignId}/reject-with-block")
-    public ResponseEntity<Map<String, Object>> getCampaignRejectWithBlockForm(@PathVariable UUID campaignId) {
-        CampaignDTO campaign = findCampaignById(campaignId);
-
-        if (campaign == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("campaign", campaign);
-        return ResponseEntity.ok(response);
-    }
-
-    @PostMapping("/{campaignId}/reject-with-block")
-    public ResponseEntity<Void> rejectCampaignAndBlockUser(
-            @PathVariable UUID campaignId,
-            @RequestParam String rejectionReason,
-            @RequestParam String blockReason) {
-
-        CampaignDTO campaign = findCampaignById(campaignId);
-
-        if (campaign == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Tolak kampanye
-        adminFacade.verifyCampaign(campaignId, false, rejectionReason);
-
-        // Blokir pengguna
-        adminFacade.blockUser(campaign.getFundraiserId(), blockReason);
-
-        return ResponseEntity.ok().build();
     }
 }

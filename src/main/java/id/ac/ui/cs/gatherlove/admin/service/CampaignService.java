@@ -6,12 +6,9 @@ import java.util.UUID;
 
 public interface CampaignService {
     Long getTotalCampaigns();
-    Long getPendingCampaigns();
     Long getActiveCampaigns();
     Long getCompletedCampaigns();
-    List<CampaignDTO> getPendingCampaignsList();
     List<CampaignDTO> getActiveCampaignsList();
     List<CampaignDTO> getCompletedCampaignsList();
-    void verifyCampaign(UUID campaignId, boolean approved, String rejectionReason);
     List<String> getFundUsageProof(UUID campaignId);
 }

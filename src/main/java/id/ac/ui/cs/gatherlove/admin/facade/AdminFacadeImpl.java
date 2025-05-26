@@ -1,4 +1,3 @@
-// src/main/java/id/ac/ui/cs/gatherlove/admin/facade/AdminFacadeImpl.java
 package id.ac.ui.cs.gatherlove.admin.facade;
 
 import id.ac.ui.cs.gatherlove.admin.dto.CampaignDTO;
@@ -26,16 +25,10 @@ public class AdminFacadeImpl implements AdminFacade {
         return DashboardStatistics.builder()
                 .totalUsers(authService.getTotalUsers())
                 .totalCampaigns(campaignService.getTotalCampaigns())
-                .pendingCampaigns(campaignService.getPendingCampaigns())
                 .activeCampaigns(campaignService.getActiveCampaigns())
                 .completedCampaigns(campaignService.getCompletedCampaigns())
                 .totalDonations(donationService.getTotalDonations())
                 .build();
-    }
-
-    @Override
-    public List<CampaignDTO> getPendingCampaigns() {
-        return campaignService.getPendingCampaignsList();
     }
 
     @Override
@@ -46,11 +39,6 @@ public class AdminFacadeImpl implements AdminFacade {
     @Override
     public List<CampaignDTO> getCompletedCampaigns() {
         return campaignService.getCompletedCampaignsList();
-    }
-
-    @Override
-    public void verifyCampaign(UUID campaignId, boolean approved, String rejectionReason) {
-        campaignService.verifyCampaign(campaignId, approved, rejectionReason);
     }
 
     @Override

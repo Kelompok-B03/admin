@@ -1,6 +1,5 @@
 package id.ac.ui.cs.gatherlove.admin.facade;
 
-import id.ac.ui.cs.gatherlove.admin.dto.CampaignDTO;
 import id.ac.ui.cs.gatherlove.admin.dto.UserDTO;
 import id.ac.ui.cs.gatherlove.admin.model.DashboardStatistics;
 import id.ac.ui.cs.gatherlove.admin.service.AuthService;
@@ -11,8 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +42,6 @@ class AdminFacadeTest {
         // Arrange
         when(authService.getTotalUsers()).thenReturn(100L);
         when(campaignService.getTotalCampaigns()).thenReturn(25L);
-        when(campaignService.getPendingCampaigns()).thenReturn(5L);
         when(campaignService.getActiveCampaigns()).thenReturn(15L);
         when(campaignService.getCompletedCampaigns()).thenReturn(5L);
         when(donationService.getTotalDonations()).thenReturn(200L);
@@ -57,52 +53,9 @@ class AdminFacadeTest {
         assertNotNull(statistics);
         assertEquals(100L, statistics.getTotalUsers());
         assertEquals(25L, statistics.getTotalCampaigns());
-        assertEquals(5L, statistics.getPendingCampaigns());
         assertEquals(15L, statistics.getActiveCampaigns());
         assertEquals(5L, statistics.getCompletedCampaigns());
         assertEquals(200L, statistics.getTotalDonations());
-    }
-
-    @Test
-    void getPendingCampaigns_ShouldReturnPendingCampaigns() {
-        // Arrange
-        CampaignDTO campaign1 = new CampaignDTO(
-                UUID.randomUUID(), "Kampanye 1", "Deskripsi", UUID.randomUUID(),
-                "Fundraiser 1", new BigDecimal("1000000"), new BigDecimal("0"),
-                LocalDate.now(), LocalDate.now().plusDays(30), "PENDING",
-                null, null
-        );
-        CampaignDTO campaign2 = new CampaignDTO(
-                UUID.randomUUID(), "Kampanye 2", "Deskripsi", UUID.randomUUID(),
-                "Fundraiser 2", new BigDecimal("2000000"), new BigDecimal("0"),
-                LocalDate.now(), LocalDate.now().plusDays(30), "PENDING",
-                null, null
-        );
-
-        when(campaignService.getPendingCampaignsList()).thenReturn(Arrays.asList(campaign1, campaign2));
-
-        // Act
-        List<CampaignDTO> pendingCampaigns = adminFacade.getPendingCampaigns();
-
-        // Assert
-        assertNotNull(pendingCampaigns);
-        assertEquals(2, pendingCampaigns.size());
-        assertEquals("Kampanye 1", pendingCampaigns.get(0).getTitle());
-        assertEquals("Kampanye 2", pendingCampaigns.get(1).getTitle());
-    }
-
-    @Test
-    void verifyCampaign_ShouldCallCampaignService() {
-        // Arrange
-        UUID campaignId = UUID.randomUUID();
-        boolean approved = true;
-        String reason = null;
-
-        // Act
-        adminFacade.verifyCampaign(campaignId, approved, reason);
-
-        // Assert
-        verify(campaignService, times(1)).verifyCampaign(campaignId, approved, reason);
     }
 
     @Test
