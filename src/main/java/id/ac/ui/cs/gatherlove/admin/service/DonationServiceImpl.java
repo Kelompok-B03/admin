@@ -25,7 +25,7 @@ public class DonationServiceImpl implements DonationService {
 
     public DonationServiceImpl(
             RestTemplate restTemplate,
-            @Value("${campaign-donation-wallet.service.url}") String donationServiceUrl) {
+            @Value("${CAMPAIGN_DONATION_WALLET_SERVICE_URL}") String donationServiceUrl) {
         this.restTemplate = restTemplate;
         this.donationServiceUrl = donationServiceUrl;
     }
