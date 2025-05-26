@@ -11,8 +11,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,8 +61,11 @@ class CampaignManagementControllerTest {
             "SELESAI"
         );
 
-        List<CampaignDTO> activeCampaigns = Collections.singletonList(activeCampaign);
-        List<CampaignDTO> completedCampaigns = Collections.singletonList(completedCampaign);
+        List<CampaignDTO> activeCampaigns = new ArrayList<>();
+        activeCampaigns.add(activeCampaign);
+        
+        List<CampaignDTO> completedCampaigns = new ArrayList<>();
+        completedCampaigns.add(completedCampaign);
 
         when(adminFacade.getActiveCampaigns()).thenReturn(activeCampaigns);
         when(adminFacade.getCompletedCampaigns()).thenReturn(completedCampaigns);
@@ -93,8 +96,9 @@ class CampaignManagementControllerTest {
             "SELESAI"
         );
 
-        List<CampaignDTO> activeCampaigns = Collections.emptyList();
-        List<CampaignDTO> completedCampaigns = Collections.singletonList(completedCampaign);
+        List<CampaignDTO> activeCampaigns = new ArrayList<>();
+        List<CampaignDTO> completedCampaigns = new ArrayList<>();
+        completedCampaigns.add(completedCampaign);
 
         when(adminFacade.getActiveCampaigns()).thenReturn(activeCampaigns);
         when(adminFacade.getCompletedCampaigns()).thenReturn(completedCampaigns);
@@ -121,10 +125,13 @@ class CampaignManagementControllerTest {
             "SEDANG_BERLANGSUNG"
         );
 
-        List<String> proofs = Arrays.asList("bukti1.jpg", "bukti2.jpg");
+        List<String> proofs = new ArrayList<>(Arrays.asList("bukti1.jpg", "bukti2.jpg"));
+        List<CampaignDTO> activeCampaigns = new ArrayList<>();
+        activeCampaigns.add(campaign);
+        List<CampaignDTO> completedCampaigns = new ArrayList<>();
 
-        when(adminFacade.getActiveCampaigns()).thenReturn(Collections.singletonList(campaign));
-        when(adminFacade.getCompletedCampaigns()).thenReturn(Collections.emptyList());
+        when(adminFacade.getActiveCampaigns()).thenReturn(activeCampaigns);
+        when(adminFacade.getCompletedCampaigns()).thenReturn(completedCampaigns);
         when(adminFacade.getFundUsageProof(campaignId)).thenReturn(proofs);
 
         // Act & Assert
@@ -147,8 +154,8 @@ class CampaignManagementControllerTest {
         // Arrange
         UUID nonExistentId = UUID.randomUUID();
         
-        when(adminFacade.getActiveCampaigns()).thenReturn(Collections.emptyList());
-        when(adminFacade.getCompletedCampaigns()).thenReturn(Collections.emptyList());
+        when(adminFacade.getActiveCampaigns()).thenReturn(new ArrayList<>());
+        when(adminFacade.getCompletedCampaigns()).thenReturn(new ArrayList<>());
 
         // Act & Assert
         mockMvc.perform(get("/api/admin/campaigns/" + nonExistentId))
@@ -173,10 +180,15 @@ class CampaignManagementControllerTest {
             "SELESAI"
         );
 
-        List<String> proofs = Collections.singletonList("bukti_final.jpg");
+        List<String> proofs = new ArrayList<>();
+        proofs.add("bukti_final.jpg");
+        
+        List<CampaignDTO> activeCampaigns = new ArrayList<>();
+        List<CampaignDTO> completedCampaigns = new ArrayList<>();
+        completedCampaigns.add(campaign);
 
-        when(adminFacade.getActiveCampaigns()).thenReturn(Collections.emptyList());
-        when(adminFacade.getCompletedCampaigns()).thenReturn(Collections.singletonList(campaign));
+        when(adminFacade.getActiveCampaigns()).thenReturn(activeCampaigns);
+        when(adminFacade.getCompletedCampaigns()).thenReturn(completedCampaigns);
         when(adminFacade.getFundUsageProof(campaignId)).thenReturn(proofs);
 
         // Act & Assert
