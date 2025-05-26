@@ -30,7 +30,7 @@ public class CampaignServiceImpl implements CampaignService {
 
     public CampaignServiceImpl(
             RestTemplate restTemplate,
-            @Value("${campaign-donation-wallet.service.url}") String serviceUrl) {
+            @Value("${CAMPAIGN_DONATION_WALLET_SERVICE_URL}") String serviceUrl) {
         this.restTemplate = restTemplate;
         this.campaignServiceUrl = serviceUrl;
     }
@@ -49,24 +49,6 @@ public class CampaignServiceImpl implements CampaignService {
             return campaigns != null ? (long) campaigns.size() : 0L;
         } catch (Exception e) {
             log.error("Error getting total campaigns: {}", e.getMessage(), e);
-            return 0L;
-        }
-    }
-
-    @Override
-    public Long getPendingCampaigns() {
-        try {
-            ResponseEntity<List<CampaignDTO>> response = restTemplate.exchange(
-                campaignServiceUrl + "/api/campaign/status/MENUNGGU_VERIFIKASI",
-                HttpMethod.GET,
-                createRequestEntity(),
-                new ParameterizedTypeReference<List<CampaignDTO>>() {}
-            );
-            
-            List<CampaignDTO> campaigns = response.getBody();
-            return campaigns != null ? (long) campaigns.size() : 0L;
-        } catch (Exception e) {
-            log.error("Error getting pending campaigns count: {}", e.getMessage(), e);
             return 0L;
         }
     }
@@ -108,28 +90,10 @@ public class CampaignServiceImpl implements CampaignService {
     }
 
     @Override
-    public List<CampaignDTO> getPendingCampaignsList() {
-        try {
-            ResponseEntity<List<CampaignDTO>> response = restTemplate.exchange(
-                campaignServiceUrl + "/api/campaign/status/MENUNGGU_VERIFIKASI",
-                HttpMethod.GET,
-                createRequestEntity(),
-                new ParameterizedTypeReference<List<CampaignDTO>>() {}
-            );
-            
-            List<CampaignDTO> campaigns = response.getBody();
-            return campaigns != null ? campaigns : new ArrayList<>();
-        } catch (Exception e) {
-            log.error("Error getting pending campaigns list: {}", e.getMessage(), e);
-            return new ArrayList<>();
-        }
-    }
-
-    @Override
     public List<CampaignDTO> getActiveCampaignsList() {
         try {
             ResponseEntity<List<CampaignDTO>> response = restTemplate.exchange(
-                campaignServiceUrl + "/api/campaign/status/SEDANG_BERLANGSUNG", // Diubah dari AKTIF
+                campaignServiceUrl + "/api/campaign/status/SEDANG_BERLANGSUNG", 
                 HttpMethod.GET,
                 createRequestEntity(),
                 new ParameterizedTypeReference<List<CampaignDTO>>() {}
@@ -167,51 +131,6 @@ public class CampaignServiceImpl implements CampaignService {
         } catch (Exception e) {
             log.error("Error getting completed campaigns list: {}", e.getMessage(), e);
             return new ArrayList<>();
-        }
-    }
-
-    @Override
-    public void verifyCampaign(UUID campaignId, boolean approved, String rejectionReason) {
-        try {
-            // Ambil detail kampanye terlebih dahulu
-            ResponseEntity<CampaignDTO> getResponse = restTemplate.exchange(
-                campaignServiceUrl + "/api/campaign/" + campaignId,
-                HttpMethod.GET,
-                createRequestEntity(),
-                CampaignDTO.class
-            );
-            
-            CampaignDTO campaign = getResponse.getBody();
-            if (campaign == null) {
-                log.error("Campaign with ID {} not found", campaignId);
-                throw new RuntimeException("Campaign not found");
-            }
-            
-            // Update status berdasarkan keputusan
-            if (approved) {
-                campaign.setStatus("SEDANG_BERLANGSUNG"); 
-            } else {
-                campaign.setStatus("MENUNGGU_VERIFIKASI");
-                campaign.setRejectionReason(rejectionReason);
-            }
-            
-            // Kode lainnya tetap sama
-            HttpEntity<CampaignDTO> requestEntity = new HttpEntity<>(campaign, getHeaders());
-            
-            restTemplate.exchange(
-                campaignServiceUrl + "/api/campaign/" + campaignId,
-                HttpMethod.PUT,
-                requestEntity,
-                Void.class
-            );
-            
-            log.info("Campaign {} has been {}.", 
-                    campaignId, 
-                    approved ? "approved" : "rejected with reason: " + rejectionReason);
-            
-        } catch (Exception e) {
-            log.error("Error verifying campaign {}: {}", campaignId, e.getMessage(), e);
-            throw new RuntimeException("Failed to verify campaign: " + e.getMessage());
         }
     }
 

@@ -14,11 +14,6 @@ public interface AdminFacade {
     DashboardStatistics getDashboardStatistics();
 
     /**
-     * Mendapatkan daftar kampanye yang menunggu verifikasi
-     */
-    List<CampaignDTO> getPendingCampaigns();
-
-    /**
      * Mendapatkan daftar kampanye aktif
      */
     List<CampaignDTO> getActiveCampaigns();
@@ -27,11 +22,6 @@ public interface AdminFacade {
      * Mendapatkan daftar kampanye yang sudah selesai
      */
     List<CampaignDTO> getCompletedCampaigns();
-
-    /**
-     * Memverifikasi kampanye
-     */
-    void verifyCampaign(UUID campaignId, boolean approved, String rejectionReason);
 
     /**
      * Mendapatkan bukti penggunaan dana kampanye

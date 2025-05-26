@@ -26,7 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final String authServiceUrl;
 
     public AuthServiceImpl(RestTemplate restTemplate, 
-                          @Value("${auth.service.url}") String authServiceUrl) {
+                          @Value("${AUTH_SERVICE_URL}") String authServiceUrl) {
         this.restTemplate = restTemplate;
         this.authServiceUrl = authServiceUrl;
     }

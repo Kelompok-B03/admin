@@ -6,11 +6,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 import id.ac.ui.cs.gatherlove.admin.config.JwtProperties;
 import io.github.cdimascio.dotenv.Dotenv;
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 @SpringBootApplication
 @EnableConfigurationProperties(JwtProperties.class)

@@ -4,25 +4,31 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class CampaignDTO {
-    private UUID id;
+    private String campaignId;
     private String title;
     private String description;
-    private UUID fundraiserId;
-    private String fundraiserName;
-    private BigDecimal targetAmount;
-    private BigDecimal collectedAmount;
+    private String fundraiserId;
+    private String fundraiserName; // Perlu didapatkan dari service lain
+    private int targetAmount; 
+    private int fundsCollected;
     private LocalDate startDate;
     private LocalDate endDate;
-    private String status; // PENDING, ACTIVE, COMPLETED, REJECTED
-    private List<String> proofOfFundUsage;
-    private String rejectionReason;
+    private String status;
+    private Boolean withdrawed;
+    private String usageProofLink;
+    
+    // Method helper untuk mendapatkan proofOfFundUsage sebagai List
+    public List<String> getProofOfFundUsage() {
+        return usageProofLink != null ? 
+            Collections.singletonList(usageProofLink) : 
+            Collections.emptyList();
+    }
 }
